@@ -5,10 +5,10 @@ function redirectTo(url) {
 }
 
 function clearLoginInputs() {
-  const email = $.querySelector('#email');
+  const identifier = $.querySelector('#identifier');
   const password = $.querySelector('#password');
 
-  email.value = '';
+  identifier.value = '';
   password.value = '';
 }
 

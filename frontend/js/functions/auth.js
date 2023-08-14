@@ -1,4 +1,5 @@
-import { redirectTo, clearRegisterInputs, areInputsValidated } from './fuctions.js';
+import { redirectTo, clearRegisterInputs, areInputsValidated, clearLoginInputs } from './fuctions.js';
+import { setLocalStorageData, showMessage } from './utilities.js';
 
 const $ = document;
 
@@ -33,37 +34,27 @@ const register = () => {
   })
     .then((res) => {
       if (res.status === 201) {
-        swal({
-          title: 'ثبت نام شما با موفقیت انجام شد',
-          text: 'شما میتوانید  وارد حساب کاربری خود شوید',
-          icon: 'success',
-          button: {
-            text: 'ورود به حساب کاربری',
-            value: true,
-            visible: true,
-            className: 'success',
-            closeModal: true,
-          },
-        }).then((result) => {
-          if (result) {
-            redirectTo('login.html');
+        showMessage(
+          'ثبت نام شما با موفقیت انجام شد',
+          'شما میتوانید  وارد حساب کاربری خود شوید',
+          'success',
+          'ورود به حساب کاربری',
+          (res) => {
+            if (res) {
+              redirectTo('login.html');
+            }
           }
-        });
+        );
 
         clearRegisterInputs();
       } else if (res.status === 409) {
-        swal({
-          title: 'نام کاربری یا ایمیل وارد شده تکراری است',
-          text: 'لطفا اطلاعات خود را تصحیح کنید',
-          icon: 'error',
-          button: {
-            text: 'تصحیح اطلاعات',
-            value: true,
-            visible: true,
-            className: 'error',
-            closeModal: true,
-          },
-        });
+        showMessage(
+          'نام کاربری یا ایمیل وارد شده تکراری است',
+          'لطفا اطلاعات خود را تصحیح کنید',
+          'error',
+          'تصحیح اطلاعات',
+          () => {}
+        );
       }
 
       return res.json();
@@ -100,11 +91,30 @@ const login = () => {
 
     body: JSON.stringify(userInfos),
   })
+    .then((res) => res.json())
     .then((res) => {
-      console.log(res);
-      return res.json();
-    })
-    .then((res) => console.log(res.accessToken));
+      if (res == 'there is no user with this email or username') {
+        showMessage('خطا', 'کاربری بااطلاعات وارد شده یافت نشد', 'error', 'مجداا امتحان کنید', () => {});
+      } else if (res.message) {
+        showMessage('خطا', 'رمز عبور وارد شده اشتباه است', 'error', 'مجداا امتحان کنید', () => {});
+      } else if (!res.accessToken) {
+        swal({
+          title: 'خطایی پیش آمد',
+          text: 'لطفا بعدا متحان کنید',
+          icon: 'error',
+        });
+      } else {
+        setLocalStorageData('user', { token: res.accessToken });
+
+        showMessage('موفق !', 'شمابا موفقیت وارد حساب کاربری خود شدید !', 'success', 'ادامه', (res) => {
+          if (res) {
+            redirectTo('index.html');
+          }
+        });
+      }
+
+      clearLoginInputs();
+    });
 };
 
 export { register, login };
