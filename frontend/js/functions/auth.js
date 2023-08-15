@@ -1,5 +1,12 @@
 import { redirectTo, clearRegisterInputs, areInputsValidated, clearLoginInputs } from './fuctions.js';
-import { setLocalStorageData, showMessage } from './utilities.js';
+import {
+  disableLoadingOverlay,
+  getCurretUserToken,
+  getLocalStorageData,
+  setLocalStorageData,
+  showLoadingOverlay,
+  showMessage,
+} from './utilities.js';
 
 const $ = document;
 
@@ -14,6 +21,8 @@ const register = () => {
   if (!areInputsValidated(name, username, email, phone, password, confirm)) {
     return;
   }
+
+  showLoadingOverlay();
 
   let userInfos = {
     name: name.value,
@@ -34,6 +43,7 @@ const register = () => {
   })
     .then((res) => {
       if (res.status === 201) {
+        disableLoadingOverlay();
         showMessage(
           'ثبت نام شما با موفقیت انجام شد',
           'شما میتوانید  وارد حساب کاربری خود شوید',
@@ -48,6 +58,7 @@ const register = () => {
 
         clearRegisterInputs();
       } else if (res.status === 409) {
+        disableLoadingOverlay();
         showMessage(
           'نام کاربری یا ایمیل وارد شده تکراری است',
           'لطفا اطلاعات خود را تصحیح کنید',
@@ -60,6 +71,7 @@ const register = () => {
       return res.json();
     })
     .catch((err) => {
+      disableLoadingOverlay();
       swal({
         title: 'خطایی پیش آمد',
         text: 'لطفا بعدا متحان کنید',
@@ -76,6 +88,8 @@ const login = () => {
   if (!areInputsValidated(identifier, password)) {
     return;
   }
+
+  showLoadingOverlay();
 
   const userInfos = {
     identifier: identifier.value,
@@ -94,10 +108,13 @@ const login = () => {
     .then((res) => res.json())
     .then((res) => {
       if (res == 'there is no user with this email or username') {
+        disableLoadingOverlay();
         showMessage('خطا', 'کاربری بااطلاعات وارد شده یافت نشد', 'error', 'مجداا امتحان کنید', () => {});
       } else if (res.message) {
+        disableLoadingOverlay();
         showMessage('خطا', 'رمز عبور وارد شده اشتباه است', 'error', 'مجداا امتحان کنید', () => {});
       } else if (!res.accessToken) {
+        disableLoadingOverlay();
         swal({
           title: 'خطایی پیش آمد',
           text: 'لطفا بعدا متحان کنید',
@@ -106,15 +123,43 @@ const login = () => {
       } else {
         setLocalStorageData('user', { token: res.accessToken });
 
+        disableLoadingOverlay();
+
         showMessage('موفق !', 'شمابا موفقیت وارد حساب کاربری خود شدید !', 'success', 'ادامه', (res) => {
           if (res) {
             redirectTo('index.html');
+          } else {
+            redirectTo('');
           }
         });
       }
-
-      clearLoginInputs();
+    })
+    .catch((err) => {
+      console.log(err);
+      disableLoadingOverlay();
+      showMessage('خطایی پیش آمد', 'لطفا بعدا متحان کنید', 'error', 'close', () => {});
     });
 };
 
-export { register, login };
+const getCurrentUserData = async () => {
+  const userToken = getCurretUserToken();
+
+  let res = await fetch('http://localhost:4000/v1/auth/me', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${userToken}`,
+    },
+  });
+
+  return await res.json();
+};
+
+const isUserLoggedIn = () => {
+  if (getLocalStorageData('user')) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export { register, login, getCurrentUserData, isUserLoggedIn };

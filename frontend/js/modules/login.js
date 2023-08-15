@@ -1,5 +1,10 @@
-import { login } from '../functions/auth.js';
-import { getCurretUserToken } from '../functions/utilities.js';
+if (isUserLoggedIn()) {
+  redirectTo('index.html');
+}
+
+import { isUserLoggedIn, login } from '../functions/auth.js';
+import { redirectTo } from '../functions/fuctions.js';
+import { showLoadingOverlay } from '../functions/utilities.js';
 
 const loginBtn = document.querySelector('#login');
 

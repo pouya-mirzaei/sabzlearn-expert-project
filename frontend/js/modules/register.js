@@ -1,8 +1,13 @@
-import { register } from "../functions/auth.js";
+if (isUserLoggedIn()) {
+  redirectTo('index.html');
+}
 
-const registerBtn = document.querySelector("#register");
+import { isUserLoggedIn, register } from '../functions/auth.js';
+import { redirectTo } from '../functions/fuctions.js';
 
-registerBtn.addEventListener("click", (e) => {
+const registerBtn = document.querySelector('#register');
+
+registerBtn.addEventListener('click', (e) => {
   e.preventDefault();
   register();
 });
