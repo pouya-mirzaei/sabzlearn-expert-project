@@ -9,5 +9,10 @@ const getAllCourses = async () => {
 
   return await res.json();
 };
+const getPopularCourses = async () => {
+  const res = await fetch('http://localhost:4000/v1/courses/popular');
 
-export { getTopBarItems, getAllCourses };
+  return await res.json();
+};
+
+export { getTopBarItems, getAllCourses, getPopularCourses };

@@ -1,7 +1,7 @@
 const userAccountBtnText = document.querySelector('.main-header__profile-text');
 const userAccountBtn = document.querySelector('.main-header__profile');
 
-import { getTopBarItems } from '../functions/api/top-bar.js';
+import { getTopBarItems } from '../functions/api/api.js';
 import { getCurrentUserData, isUserLoggedIn } from './../functions/auth.js';
 
 window.addEventListener('load', app);
