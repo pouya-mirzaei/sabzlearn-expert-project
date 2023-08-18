@@ -1,4 +1,4 @@
-import { getAllCourses, getPopularCourses } from '../functions/api/api.js';
+import { getAllCourses, getPopularCourses, getPresellCourses } from '../functions/api/api.js';
 
 const $ = document;
 const landingTitle = $.querySelector('.landing__title');
@@ -9,6 +9,7 @@ const landingUsersCount = $.querySelector('#users-counter');
 window.addEventListener('load', () => {
   displayNewestCourses();
   displePopularCourses();
+  displayPresellCourses();
 
   let landingText = 'ما به هر قیمتی دوره آموزشی تولید نمی کنیم !';
   let typeIndex = 0;
@@ -52,8 +53,6 @@ async function displayNewestCourses() {
   const coursesContainer = document.querySelector('#newest-courses');
   coursesContainer.innerHTML = '';
 
-  let covers = ['fareelancer.png', 'jango.png', 'js_project.png', 'nodejs.png', 'python.png', 'youtuber.png'];
-
   courses.slice(0, 6).map((course, i) => {
     coursesContainer.insertAdjacentHTML(
       'beforeend',
@@ -61,7 +60,7 @@ async function displayNewestCourses() {
     <div class="col-4">
     <div class="course-box">
       <a href="#">
-        <img src="images/courses/${covers[i]}" alt="Course img" class="course-box__img" />
+        <img src="http://localhost:4000/courses/covers/${course.cover}" alt="Course img" class="course-box__img" />
       </a>
       <div class="course-box__main">
         <a href="#" class="course-box__title">${course.name}</a>
@@ -82,7 +81,7 @@ async function displayNewestCourses() {
             <i class="fas fa-users course-box__users-icon"></i>
             <span class="course-box__users-text">${course.registers}</span>
           </div>
-          <span class="course-box__price">${course.price ? course.price : 'رایگان'}</span>
+          <span class="course-box__price">${course.price ? course.price.toLocaleString() : 'رایگان'}</span>
         </div>
       </div>
 
@@ -125,16 +124,6 @@ async function displePopularCourses() {
   const popularCoursesContainer = document.querySelector('#popular-courses');
   popularCoursesContainer.innerHTML = '';
 
-  let covers = [
-    'fareelancer.png',
-    'jango.png',
-    'python.png',
-    'js_project.png',
-    'nodejs.png',
-    'python.png',
-    'youtuber.png',
-  ];
-
   popularCourses.map((course, i) => {
     popularCoursesContainer.insertAdjacentHTML(
       'beforeend',
@@ -142,7 +131,7 @@ async function displePopularCourses() {
       <div class="swiper-slide">
         <div class="course-box">
           <a href="#">
-            <img src="images/courses/${covers[i]}" alt="Course img" class="course-box__img" />
+            <img src="http://localhost:4000/courses/covers/${course.cover}" alt="Course img" class="course-box__img" />
           </a>
           <div class="course-box__main">
             <a href="#" class="course-box__title">${course.name}</a>
@@ -162,7 +151,7 @@ async function displePopularCourses() {
                 <i class="fas fa-users course-box__users-icon"></i>
                 <span class="course-box__users-text">${course.registers}</span>
               </div>
-              <span class="course-box__price">${course.price}</span>
+              <span class="course-box__price">${course.price ? course.price.toLocaleString() : 'رایگان'}</span>
             </div>
           </div>
 
@@ -179,3 +168,50 @@ async function displePopularCourses() {
     );
   });
 }
+
+const displayPresellCourses = async () => {
+  let presells = await getPopularCourses();
+  const presellCotainer = document.querySelector('#presell');
+
+  presells.forEach((course) => {
+    presellCotainer.insertAdjacentHTML(
+      'beforeend',
+      `   <div class="swiper-slide">
+      <div class="course-box">
+        <a href="#">
+          <img src="http://localhost:4000/courses/covers/${course.cover}" alt="Course img" class="course-box__img" />
+        </a>
+        <div class="course-box__main">
+          <a href="#" class="course-box__title">${course.name}</a>
+
+          <div class="course-box__rating-teacher">
+            <div class="course-box__teacher">
+              <i class="fas fa-chalkboard-teacher course-box__teacher-icon"></i>
+              <a href="#" class="course-box__teacher-link">${course.creator}</a>
+            </div>
+            <div class="course-box__rating">
+            ${handleCourseRatting(course.courseAverageScore)}
+            </div>
+          </div>
+
+          <div class="course-box__status">
+            <div class="course-box__users">
+              <i class="fas fa-users course-box__users-icon"></i>
+              <span class="course-box__users-text">${course.registers}</span>
+            </div>
+            <span class="course-box__price">${course.price ? course.price.toLocaleString() : 'رایگان'}</span>
+          </div>
+        </div>
+
+        <div class="course-box__footer">
+          <a href="#" class="course-box__footer-link">
+            مشاهده اطلاعات
+            <i class="fas fa-arrow-left course-box__footer-icon"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>`
+    );
+  });
+};
