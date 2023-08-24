@@ -1,16 +1,17 @@
-@import "./variables.css";
-@import "./fonts.css";
+@import './variables.css';
+@import './fonts.css';
 @import './top-bar.css';
-@import "./navbar.css";
-@import "./defaults.css";
-@import "./footer.css";
-@import "./course-box.css";
-@import "./helpers.css";
+@import './navbar.css';
+@import './defaults.css';
+@import './footer.css';
+@import './course-box.css';
+@import './helpers.css';
 
 /* Start landing Styles */
 
 .landing {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../images/background_landing.jfif) no-repeat center center;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url(../images/background_landing.jfif) no-repeat center center;
   background-size: cover;
   background-attachment: fixed;
   text-align: center;
@@ -172,22 +173,25 @@
 
 /* Finish About Us Styles */
 
-
 /* Start Popular Courses Styles */
-.popular, .presell {
+.popular,
+.presell {
   margin: 5rem 0;
 }
 
-.popular__slider .course-box, .presell__slider .course-box {
+.popular__slider .course-box,
+.presell__slider .course-box {
   margin: 0 1.3rem;
   box-shadow: 0 0 10px rgba(168, 172, 185, 0.3);
 }
 
-.popular__slider .course-box:hover, .presell__slider .course-box {
+.popular__slider .course-box:hover,
+.presell__slider .course-box {
   transform: none;
 }
 
-.presell__slider, .popular__slider {
+.presell__slider,
+.popular__slider {
   margin: 4rem 0;
   position: relative;
 }
@@ -195,7 +199,6 @@
 /* Finish Popular Courses Styles */
 
 /* Start Articles Styles */
-
 
 .articles {
   margin: 4rem 0;
@@ -243,6 +246,10 @@
   box-shadow: 0 5px 30px rgba(70, 72, 77, 0.08);
 }
 
+.article-card__header {
+  width: 100%;
+}
+
 .article-card:hover {
   transform: translateY(-0.6rem);
 }
@@ -277,6 +284,12 @@
 .article-card__btn:hover {
   color: var(--white-color);
   background-color: var(--primary-color);
+}
+
+.article-card__link-img {
+  max-width: 100%;
+  height: auto;
+  background-size: cover;
 }
 
 /* Finish Articles Styles */

@@ -1,15 +1,25 @@
-import { getAllCourses, getPopularCourses, getPresellCourses } from '../functions/api/api.js';
+import {
+  getAllArticles,
+  getAllCourses,
+  getAllMenus,
+  getPopularCourses,
+  getPresellCourses,
+} from '../functions/api/api.js';
 
 const $ = document;
 const landingTitle = $.querySelector('.landing__title');
 const landingCoursesCount = $.querySelector('#courses-count');
 const landingMinutesCount = $.querySelector('#minutes-counter');
 const landingUsersCount = $.querySelector('#users-counter');
+const articlesContainer = $.querySelector('#articles-container');
+const mainHader = $.querySelector('#main-header');
 
 window.addEventListener('load', () => {
   displayNewestCourses();
   displePopularCourses();
   displayPresellCourses();
+  displayArticles();
+  displayMenus();
 
   let landingText = 'ما به هر قیمتی دوره آموزشی تولید نمی کنیم !';
   let typeIndex = 0;
@@ -214,4 +224,76 @@ const displayPresellCourses = async () => {
     </div>`
     );
   });
+};
+
+const displayArticles = async () => {
+  const articles = await getAllArticles();
+
+  articlesContainer.innerHTML = '';
+  articles.slice(0, 3).map((article) => {
+    articlesContainer.insertAdjacentHTML(
+      'beforeend',
+      `
+      <div class="col-4">
+              <div class="article-card">
+                <div class="article-card__header">
+                  <a href="#" class="article-card__link-img">
+                    <img src="http://localhost:4000/courses/covers/a6ffb1ed11bae54f6ef12e55cfa0cc2dfcf640df25b25f70dfa61cbc5703d12f.png" class="article-card__img" alt="Article Cover" />
+                  </a>
+                </div>
+                <div class="article-card__content">
+                  <a href="#" class="article-card__link">
+                  ${article.title}
+                  </a>
+                  <p class="article-card__text">
+                  ${article.description}
+                  </p>
+                  <a href="#" class="article-card__btn">بیشتر بخوانید</a>
+                </div>
+              </div>
+            </div>
+    `
+    );
+  });
+};
+
+const displayMenus = async () => {
+  const menus = await getAllMenus();
+
+  console.log(menus);
+
+  menus.map((item) => {
+    mainHader.insertAdjacentHTML(
+      'beforeend',
+      `
+        <li class="main-header__item">
+          <a href="#" class="main-header__link">${item.title}</a>
+
+          ${item.submenus[0] ? hanldeSuMenus(item.submenus) : ''}
+
+
+       </li>
+      `
+    );
+  });
+};
+
+const hanldeSuMenus = (menus) => {
+  let items = '';
+
+  menus.map((menu) => {
+    items += `
+    <li class="main-header__dropdown-item">
+      <a href="#" class="main-header__dropdown-link">${menu.title}</a>
+    </li>
+
+    `;
+  });
+
+  return `<i class="fas fa-angle-down main-header__link-icon"></i>
+
+  <ul class="main-header__dropdown">
+       ${items}
+  </ul>
+  `;
 };
