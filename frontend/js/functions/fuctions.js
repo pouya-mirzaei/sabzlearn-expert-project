@@ -47,4 +47,12 @@ function areInputsValidated(...inputs) {
   return result;
 }
 
-export { redirectTo, clearLoginInputs, clearRegisterInputs, areInputsValidated };
+function formatHref(href) {
+  let i = href.split('').slice(1, -1).join('').indexOf('/');
+  return href
+    .split('')
+    .slice(i + 1 + 1)
+    .join('');
+}
+
+export { redirectTo, clearLoginInputs, clearRegisterInputs, areInputsValidated, formatHref };

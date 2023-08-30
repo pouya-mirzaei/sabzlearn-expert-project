@@ -1,9 +1,9 @@
 import {
   getAllArticles,
   getAllCourses,
-  getAllMenus,
   getPopularCourses,
   getPresellCourses,
+  connectionTest,
 } from '../functions/api/api.js';
 
 const $ = document;
@@ -12,14 +12,16 @@ const landingCoursesCount = $.querySelector('#courses-count');
 const landingMinutesCount = $.querySelector('#minutes-counter');
 const landingUsersCount = $.querySelector('#users-counter');
 const articlesContainer = $.querySelector('#articles-container');
-const mainHader = $.querySelector('#main-header');
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
+  if (!(await connectionTest())) {
+    return false;
+  }
+
   displayNewestCourses();
   displePopularCourses();
   displayPresellCourses();
   displayArticles();
-  displayMenus();
 
   let landingText = 'ما به هر قیمتی دوره آموزشی تولید نمی کنیم !';
   let typeIndex = 0;
@@ -129,7 +131,7 @@ function handleCourseRatting(rating) {
 // most popular courses
 
 async function displePopularCourses() {
-  const popularCourses = await getPopularCourses();
+  const popularCourses = await getPresellCourses();
 
   const popularCoursesContainer = document.querySelector('#popular-courses');
   popularCoursesContainer.innerHTML = '';
@@ -255,45 +257,4 @@ const displayArticles = async () => {
     `
     );
   });
-};
-
-const displayMenus = async () => {
-  const menus = await getAllMenus();
-
-  console.log(menus);
-
-  menus.map((item) => {
-    mainHader.insertAdjacentHTML(
-      'beforeend',
-      `
-        <li class="main-header__item">
-          <a href="#" class="main-header__link">${item.title}</a>
-
-          ${item.submenus[0] ? hanldeSuMenus(item.submenus) : ''}
-
-
-       </li>
-      `
-    );
-  });
-};
-
-const hanldeSuMenus = (menus) => {
-  let items = '';
-
-  menus.map((menu) => {
-    items += `
-    <li class="main-header__dropdown-item">
-      <a href="#" class="main-header__dropdown-link">${menu.title}</a>
-    </li>
-
-    `;
-  });
-
-  return `<i class="fas fa-angle-down main-header__link-icon"></i>
-
-  <ul class="main-header__dropdown">
-       ${items}
-  </ul>
-  `;
 };

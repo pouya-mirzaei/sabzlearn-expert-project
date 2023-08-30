@@ -1,5 +1,12 @@
 import { getCurretUserToken } from '../utilities.js';
 
+const connectionTest = async () => {
+  let res = await fetch('http://localhost:4000/v1/articles')
+    .then((res) => true)
+    .catch((err) => false);
+  return res;
+};
+
 const getTopBarItems = async () => {
   let res = await fetch('http://localhost:4000/v1/menus/topbar');
 
@@ -41,4 +48,12 @@ const getAllMenus = async () => {
   return await res.json();
 };
 
-export { getTopBarItems, getAllCourses, getPopularCourses, getPresellCourses, getAllArticles, getAllMenus };
+export {
+  getTopBarItems,
+  getAllCourses,
+  getPopularCourses,
+  getPresellCourses,
+  getAllArticles,
+  getAllMenus,
+  connectionTest,
+};
